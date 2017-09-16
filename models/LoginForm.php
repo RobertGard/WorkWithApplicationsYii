@@ -15,67 +15,65 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
-    public $rememberMe = true;
-
-    private $_user = false;
 
 
     /**
+     *Проверка валидации
      * @return array the validation rules.
      */
     public function rules()
     {
-        return [
-            // username and password are both required
+        return [ 
             [['username', 'password'], 'required'],
-            // rememberMe must be a boolean value
-            ['rememberMe', 'boolean'],
-            // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
     }
 
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
+     * Поиск пользователя по его username
+     *
+     * @return User|null
+     */
+    public function getUser()
+    {
+        return User::findOne(['username'=>$this->username]);
+    }
+    
+    
+    /**
+     * Проверка на существование пользователя в бд
      *
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
     public function validatePassword($attribute, $params)
     {
-        if (!$this->hasErrors()) {
+        if(!$this->hasErrors()) // если нет ошибок в валидации
+        {
             $user = $this->getUser();
 
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+            if (!$user || ($user->password_hash != sha1($this->password))) {
+                //если мы НЕ нашли в базе такого пользователя
+                //или введенный пароль и пароль пользователя в базе НЕ равны ТО,
+                $this->addError($attribute, 'Данные введены не верно !');
+                 //добавляем новую ошибку для атрибута password о том что пароль или имейл введены не верно
             }
         }
+        
     }
 
     /**
-     * Logs in a user using the provided username and password.
+     * Добавление в сессию
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login($post_data)
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            $session = Yii::$app->session;
+            $session->set('user_name',$post_data['username']);
+            if($session->has('user_name')){
+                return true; 
+            }
         }
-        return false;
-    }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    public function getUser()
-    {
-        if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
-        }
-
-        return $this->_user;
     }
 }

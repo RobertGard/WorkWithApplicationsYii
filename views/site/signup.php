@@ -3,7 +3,7 @@
     use yii\helpers\Html;
     use yii\bootstrap\ActiveForm;
      
-    $this->title = 'Login';
+    $this->title = 'Signup';
     $this->params['breadcrumbs'][] = $this->title;
     ?>
     <div class="site-signup">
@@ -13,10 +13,10 @@
             <div class="col-lg-5">
      
                 <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
-                    <?= $form->field($login_model, 'username')->textInput(['autofocus' => true]) ?>
-                    <?= $form->field($login_model, 'password')->passwordInput() ?>
+                    <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                    <?= $form->field($model, 'password')->passwordInput() ?>
                     <div class="form-group">
-                        <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                        <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
                     </div>
                 <?php ActiveForm::end(); ?>
      
