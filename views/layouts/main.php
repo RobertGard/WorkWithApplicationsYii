@@ -38,13 +38,13 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
+            ['label' => 'List', 'url' => ['/request/listadmin']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
             !Yii::$app->session->has('user_name') ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Login', 'url' => ['/user/login']]
             ) : (
                 '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
+                . Html::beginForm(['/user/logout'], 'post')
                 . Html::submitButton(
                     'Logout (' . Yii::$app->session->get('user_name') . ')',
                     ['class' => 'btn btn-link logout']
