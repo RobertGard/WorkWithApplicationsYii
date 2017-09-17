@@ -44,7 +44,13 @@
             $user = new User();
             $user->username = $this->username;
             $user->password_hash = sha1($this->password);
-            return $user->save() ? $user : null;
+            if($user->save()){
+                $session = Yii::$app->session;
+                $session->set('user_name',$this->username);
+                if($session->has('user_name')){
+                    return true; 
+                }
+            }
         }
      
     }
